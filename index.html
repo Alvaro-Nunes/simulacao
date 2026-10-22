@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2f3f4">
+  <meta name="description" content="Simule as condições de pagamento da Elite Veículos e da iTroca Phone.">
+  <title>Simulação de pagamento</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell" id="app" data-shop="elite" data-theme="light">
+    <header class="topbar">
+      <a class="brand" id="brand-home" href="#" aria-label="Voltar à seleção de lojas">
+        <span class="brand-logo"><img id="brand-logo" src="assets/elite-tema-claro.png" alt="Elite Veículos"></span>
+        <span class="brand-name" id="brand-name">Elite Veículos</span>
+      </a>
+      <div class="topbar-actions">
+        <button class="button button-quiet theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema escuro">
+          <span class="theme-glyph" aria-hidden="true">◐</span><span id="theme-label">Tema escuro</span>
+        </button>
+        <button class="button button-quiet" id="store-switch" type="button" hidden>Trocar loja</button>
+        <button class="button button-quiet" id="admin-open" type="button" hidden>Configurações</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <section class="store-select" id="store-select" aria-labelledby="welcome-title">
+        <div class="home-copy">
+          <p class="eyebrow">Simulação de pagamento</p>
+          <h1 id="welcome-title">Uma proposta clara começa com bons números.</h1>
+          <p>Escolha a loja para consultar as opções de pagamento.</p>
+        </div>
+        <div class="store-grid">
+          <button class="store-card store-card-elite" type="button" data-shop-choice="elite">
+            <span class="store-mark store-mark-elite"><img src="assets/elite-tema-claro.png" alt="" aria-hidden="true"></span>
+            <span class="store-card-copy"><strong>Elite Veículos</strong><span>Condições para o seu próximo veículo.</span></span>
+            <span class="store-card-action">Abrir simulador <span aria-hidden="true">↗</span></span>
+          </button>
+          <button class="store-card store-card-itroca" type="button" data-shop-choice="itroca">
+            <span class="store-mark store-mark-itroca"><img src="assets/itroca-tema-claro.png" alt="" aria-hidden="true"></span>
+            <span class="store-card-copy"><strong>iTroca Phone</strong><span>Encontre uma condição para seu próximo iPhone.</span></span>
+            <span class="store-card-action">Abrir simulador <span aria-hidden="true">↗</span></span>
+          </button>
+        </div>
+        <p class="home-footnote">Valores apresentados como estimativa comercial.</p>
+      </section>
+
+      <section class="simulator" id="simulator" hidden aria-labelledby="shop-title">
+        <div class="simulator-heading">
+          <button class="back-link" id="back-to-stores" type="button"><span aria-hidden="true">←</span> Todas as lojas</button>
+          <div class="heading-copy">
+            <p class="eyebrow">Simulação</p>
+            <h1 id="shop-title">Elite Veículos</h1>
+            <p id="shop-description">Veja as condições de pagamento para o seu próximo veículo.</p>
+          </div>
+        </div>
+
+        <div class="simulator-grid">
+          <form class="simulation-form" id="simulation-form" novalidate>
+            <fieldset class="payment-picker">
+              <legend>Forma de pagamento</legend>
+              <div class="segmented-control">
+                <label class="segment-option">
+                  <input type="radio" name="payment" value="boleto" checked>
+                  <span>Financiamento próprio</span>
+                </label>
+                <label class="segment-option">
+                  <input type="radio" name="payment" value="cartao">
+                  <span>Cartão de crédito</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="form-fields">
+              <label class="field" for="product-value">
+                <span>Valor do produto</span>
+                <span class="input-wrap"><span class="currency-prefix">R$</span><input id="product-value" name="product" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-describedby="product-error"></span>
+                <small class="field-error" id="product-error"></small>
+              </label>
+              <label class="field" for="down-payment">
+                <span>Entrada <span class="field-optional">opcional</span></span>
+                <span class="input-wrap"><span class="currency-prefix">R$</span><input id="down-payment" name="entry" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-describedby="entry-error"></span>
+                <small class="field-error" id="entry-error"></small>
+              </label>
+            </div>
+
+            <label class="field installment-field" for="installments">
+              <span id="installments-label">Parcelas no boleto</span>
+              <select id="installments" name="installments"></select>
+              <small class="field-hint" id="installments-hint"></small>
+              <small class="field-error" id="installments-error"></small>
+            </label>
+
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+            <div class="form-actions">
+              <button class="button button-primary" type="submit">Calcular simulação</button>
+              <button class="button button-secondary" id="new-simulation" type="button">Nova simulação</button>
+            </div>
+            <p class="form-note">A simulação não representa uma aprovação de crédito.</p>
+          </form>
+
+          <section class="result-panel" id="result-panel" aria-live="polite" aria-label="Resultado da simulação">
+            <div class="result-empty" id="result-empty">
+              <span class="result-mark" aria-hidden="true">R$</span>
+              <h2>Os valores aparecem aqui.</h2>
+              <p>Informe o valor do produto e escolha as condições para calcular a proposta.</p>
+            </div>
+            <div id="result-content" hidden>
+              <div class="installment-highlight">
+                <span class="result-label">Valor de cada parcela</span>
+                <strong id="result-installment">R$ 0,00</strong>
+                <span class="installment-count" id="result-count">em 0 parcelas</span>
+              </div>
+              <dl class="result-breakdown">
+                <div><dt>Valor do produto</dt><dd id="result-product">R$ 0,00</dd></div>
+                <div><dt>Entrada</dt><dd id="result-entry">R$ 0,00</dd></div>
+                <div><dt>Total das parcelas</dt><dd id="result-installment-total">R$ 0,00</dd></div>
+                <div class="result-total"><dt>Total geral</dt><dd id="result-grand-total">R$ 0,00</dd></div>
+              </dl>
+              <details class="schedule-details" id="schedule-details" hidden>
+                <summary>Ver composição das parcelas</summary>
+                <div class="table-scroll">
+                  <table>
+                    <thead><tr><th scope="col">Parcela</th><th scope="col">Valor</th><th scope="col">Juros</th><th scope="col">Amortização</th><th scope="col">Saldo devedor</th></tr></thead>
+                    <tbody id="schedule-body"></tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+        <p class="simulator-footnote">Os valores são arredondados para exibição. Confirme as condições com a equipe da loja.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>Elite Veículos &amp; iTroca Phone</span><span>Simulação sujeita à confirmação da loja.</span></footer>
+
+    <dialog class="admin-dialog" id="admin-dialog" aria-labelledby="admin-title">
+    <div class="dialog-header">
+      <div><p class="eyebrow">Área administrativa</p><h2 id="admin-title">Configurações comerciais</h2></div>
+      <button class="dialog-close" id="admin-close" type="button" aria-label="Fechar configurações">×</button>
+    </div>
+    <p class="admin-notice">As configurações ficam neste navegador. Como o site é estático, elas não são protegidas: qualquer pessoa com acesso ao código pode inspecioná-las.</p>
+    <div class="admin-tabs" role="tablist" aria-label="Configurações por loja">
+      <button class="admin-tab" type="button" role="tab" data-admin-shop="elite" aria-selected="true">Elite Veículos</button>
+      <button class="admin-tab" type="button" role="tab" data-admin-shop="itroca" aria-selected="false">iTroca Phone</button>
+    </div>
+    <form id="admin-form" novalidate>
+      <div class="admin-content" id="admin-content"></div>
+      <p class="admin-status" id="admin-status" role="status" aria-live="polite"></p>
+      <div class="admin-actions">
+        <button class="button button-primary" type="submit">Salvar configurações</button>
+        <button class="button button-secondary" id="restore-open" type="button">Restaurar originais</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="restore-dialog" aria-labelledby="restore-title">
+    <h2 id="restore-title">Restaurar configurações originais?</h2>
+    <p>Os valores editados desta loja serão substituídos pelos valores iniciais.</p>
+    <div class="confirm-actions">
+      <button class="button button-secondary" id="restore-cancel" type="button">Cancelar</button>
+      <button class="button button-primary" id="restore-confirm" type="button">Restaurar</button>
+    </div>
+  </dialog>
+  </div>
+</body>
+</html>
